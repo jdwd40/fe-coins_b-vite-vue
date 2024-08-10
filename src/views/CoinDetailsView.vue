@@ -38,10 +38,16 @@
 
       <div v-if="user" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
         <h2 class="text-xl font-bold mb-2">Buy {{ coin.name }}</h2>
+        <div class="mb-4">
+          <p class="text-gray-700">Your Funds: ${{ user.funds ? Number(user.funds).toFixed(2) : '0.00' }}</p>
+        </div>
         <form @submit.prevent="confirmBuy">
           <div class="mb-4">
             <label class="block text-gray-700 text-sm font-bold mb-2" for="amount">Amount</label>
-            <input v-model="buyAmount" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="amount" type="number" min="1" required>
+            <input v-model.number="buyAmount" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="amount" type="number" min="1" required>
+          </div>
+          <div class="mb-4">
+            <p class="text-gray-700">Total Cost: ${{ (buyAmount * coin.current_price).toFixed(2) }}</p>
           </div>
           <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
             Buy
@@ -52,6 +58,8 @@
       <div v-if="showConfirmation" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
         <div class="bg-white rounded-lg p-8">
           <p class="mb-4">Are you sure you want to buy {{ buyAmount }} of {{ coin.name }}?</p>
+          <p class="mb-4">Each: ${{ coin.current_price }}</p>
+          <p class="mb-4">Total Cost: ${{ (buyAmount * coin.current_price).toFixed(2) }}</p>
           <button @click="executeBuy" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2">Confirm</button>
           <button @click="cancelBuy" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Cancel</button>
         </div>
@@ -67,7 +75,7 @@
 <script>
 import { getCoinDetails, getCoinHistory, getCoinEvents, getMarketStats, buyCoin } from '../services/coinService';
 import { nextTick } from 'vue';
-import { mapState } from 'vuex';
+import { mapState, mapMutations } from 'vuex';
 import Chart from 'chart.js/auto';
 import 'chartjs-adapter-date-fns';
 
@@ -87,23 +95,8 @@ export default {
   computed: {
     ...mapState(['user']),
   },
-  async created() {
-    const coinId = this.$route.params.id;
-    try {
-      this.coin = await getCoinDetails(coinId);
-      this.history = await getCoinHistory(coinId);
-      const events = await getCoinEvents(coinId);
-      this.event = events.length > 0 ? events[0] : null;
-      this.marketStats = await getMarketStats();
-      this.loading = false;
-      await nextTick();
-      this.renderChart();
-    } catch (error) {
-      console.error('Error loading coin details:', error);
-      this.loading = false;
-    }
-  },
   methods: {
+    ...mapMutations(['setUser']),
     renderChart() {
       if (this.history.length) {
         const ctx = document.getElementById('priceChart').getContext('2d');
@@ -180,8 +173,11 @@ export default {
           type: 'buy',
           amount: this.buyAmount,
         };
-        await buyCoin(transactionData);
+        const result = await buyCoin(transactionData);
         this.showConfirmation = false;
+        // Update user's funds
+        const updatedFunds = parseFloat(this.user.funds) - parseFloat((this.buyAmount * this.coin.current_price).toFixed(2));
+        this.setUser({ ...this.user, funds: updatedFunds });
         alert('Transaction successful!');
         this.$router.push('/portfolio');
       } catch (error) {
@@ -192,6 +188,22 @@ export default {
     cancelBuy() {
       this.showConfirmation = false;
     },
+  },
+  async created() {
+    const coinId = this.$route.params.id;
+    try {
+      this.coin = await getCoinDetails(coinId);
+      this.history = await getCoinHistory(coinId);
+      const events = await getCoinEvents(coinId);
+      this.event = events.length > 0 ? events[0] : null;
+      this.marketStats = await getMarketStats();
+      this.loading = false;
+      await nextTick();
+      this.renderChart();
+    } catch (error) {
+      console.error('Error loading coin details:', error);
+      this.loading = false;
+    }
   },
 };
 </script>

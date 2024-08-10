@@ -4,6 +4,10 @@
       <h1 class="text-3xl font-bold text-gray-800 mb-6">My Portfolio</h1>
       <div v-if="loading" class="text-gray-700">Loading...</div>
       <div v-else>
+        <div class="text-gray-800 mb-6">
+          <p><strong>User:</strong> {{ user.username }}</p>
+          <p><strong>Funds:</strong> ${{ user.funds }}</p>
+        </div>
         <table class="min-w-full bg-white shadow-md rounded mb-4">
           <thead>
             <tr>

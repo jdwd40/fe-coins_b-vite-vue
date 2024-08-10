@@ -10,7 +10,7 @@
         <router-link v-if="!user" class="text-white mr-4" to="/login">Login</router-link>
         <router-link v-if="!user" class="text-white mr-4" to="/register">Register</router-link>
         <router-link v-if="user" class="text-white mr-4" to="/portfolio">Portfolio</router-link>
-        <span v-if="user" class="text-white mr-4">{{ user.username }} ({{ user.funds }})</span>
+        <span v-if="user" class="text-white mr-4">{{ user.username }} ({{ user.funds ? Number(user.funds).toFixed(2) : '0.00' }})</span>
         <a v-if="user" href="#" class="text-white" @click.prevent="logout">Logout</a>
       </div>
     </div>
@@ -18,12 +18,12 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 export default {
   name: 'Navbar',
   computed: {
-    user() {
-      return this.$store.state.user;
-    },
+    ...mapState(['user']),
   },
   methods: {
     logout() {
