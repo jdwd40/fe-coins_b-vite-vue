@@ -61,3 +61,12 @@ export const buyCoin = async (transactionData) => {
     throw error.response.data;
   }
 };
+
+export const sellCoin = async (transactionData) => {
+  try {
+    const response = await axios.post(TRANSACTION_URL, transactionData);
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+}

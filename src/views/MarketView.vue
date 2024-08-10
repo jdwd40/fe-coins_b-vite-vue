@@ -9,8 +9,6 @@
             <p class="text-gray-700 mb-2">Current Price: ${{ coin.current_price }}</p>
             <p class="text-gray-700 mb-2">Supply: {{ coin.supply }}</p>
             <p class="text-gray-700 mb-2">Market Cap: ${{ coin.market_cap }}</p>
-            <p class="text-gray-700 mb-2">Date Added: {{ new Date(coin.date_added).toLocaleDateString() }}</p>
-            <p class="text-gray-700">{{ coin.description }}</p>
             <router-link :to="`/coin/${coin.coin_id}`" class="text-blue-500 hover:underline">View Details</router-link>
           </div>
         </div>
