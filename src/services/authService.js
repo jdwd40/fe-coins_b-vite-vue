@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://jdwd40.com:9001/api/users/';
+const API_URL = 'https://jdwd40.com:9001/api/users/';
 
 export const login = async (email, password) => {
   try {
