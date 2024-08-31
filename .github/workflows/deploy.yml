@@ -3,7 +3,7 @@ name: Deploy to VPS
 on:
   push:
     branches:
-      - master  # Trigger the workflow on pushes to the main branch
+      - main  # Trigger the workflow on pushes to the main branch
 
 jobs:
   build:
@@ -11,12 +11,12 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2  # Checkout the latest code from the repository
+      uses: actions/checkout@v3  # Update to the latest version of checkout action
 
     - name: Set up Node.js
-      uses: actions/setup-node@v2  # Set up Node.js environment
+      uses: actions/setup-node@v3  # Update to the latest version of setup-node action
       with:
-        node-version: '18'  # Specify the Node.js version
+        node-version: '18'  # Specify the Node.js version you want to use (LTS version)
 
     - name: Install dependencies
       run: npm install  # Install project dependencies
