@@ -17,7 +17,7 @@
 
       <!-- Price Chart -->
       <div class="bg-white shadow-md rounded-lg p-4 mb-4">
-        <h2 class="text-xl font-semibold text-gray-800 mb-2">Price History (Last Hour)</h2>
+        <h2 class="text-xl font-semibold text-gray-800 mb-2">Price History (30mins)</h2>
         <div class="chart-container" style="position: relative; height:300px; width:100%">
           <canvas id="priceChart"></canvas>
         </div>
