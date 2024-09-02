@@ -24,8 +24,8 @@
             <tr v-for="coin in portfolio" :key="coin.portfolio_id">
               <td class="border px-4 py-2 text-gray-800">{{ coin.name }}</td>
               <td class="border px-4 py-2 text-gray-800">{{ coin.amount }}</td>
-              <td class="border px-4 py-2 text-gray-800">${{ coin.current_price }}</td>
-              <td class="border px-4 py-2 text-gray-800">${{ (coin.amount * coin.current_price).toFixed(2) }}</td>
+              <td class="border px-4 py-2 text-gray-800">£{{ coin.current_price }}</td>
+              <td class="border px-4 py-2 text-gray-800">£{{ (coin.amount * coin.current_price).toFixed(2) }}</td>
             </tr>
           </tbody>
         </table>
@@ -49,7 +49,7 @@
               <input v-model.number="sellAmount" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-800 bg-gray-200 leading-tight focus:outline-none focus:shadow-outline" id="amount" type="number" :max="selectedCoin ? selectedCoin.amount : 0" min="1" required>
             </div>
             <div class="mb-4">
-              <p class="text-gray-700">Total Sale Value: ${{ selectedCoin ? (sellAmount * selectedCoin.current_price).toFixed(2) : '0.00' }}</p>
+              <p class="text-gray-700">Total Sale Value: £{{ selectedCoin ? (sellAmount * selectedCoin.current_price).toFixed(2) : '0.00' }}</p>
             </div>
             <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
               Sell
@@ -61,8 +61,8 @@
         <div v-if="showConfirmation" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
           <div class="bg-white rounded-lg p-8">
             <p class="mb-4 text-gray-800">Are you sure you want to sell {{ sellAmount }} of {{ selectedCoin ? selectedCoin.name : '' }}?</p>
-            <p class="mb-4 text-gray-800">Each: ${{ selectedCoin ? selectedCoin.current_price : '' }}</p>
-            <p class="mb-4 text-gray-800">Total Sale Value: ${{ selectedCoin ? (sellAmount * selectedCoin.current_price).toFixed(2) : '0.00' }}</p>
+            <p class="mb-4 text-gray-800">Each: £{{ selectedCoin ? selectedCoin.current_price : '' }}</p>
+            <p class="mb-4 text-gray-800">Total Sale Value: £{{ selectedCoin ? (sellAmount * selectedCoin.current_price).toFixed(2) : '0.00' }}</p>
             <div class="flex justify-end">
               <button @click="executeSell" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2">Confirm</button>
               <button @click="cancelSell" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Cancel</button>

@@ -8,12 +8,12 @@
       
       <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" v-if="marketStats">
         <h2 class="text-xl font-bold mb-2">Market Details</h2>
-        <p class="text-gray-700 mb-2">Market Value: ${{ marketStats.marketValue }}</p>
-        <p class="text-gray-700 mb-2">Last 5 Minutes Market Value: ${{ marketStats.last5minsMarketValue }} ({{ marketStats.percentage5mins }})</p>
-        <p class="text-gray-700 mb-2">Last 10 Minutes Market Value: ${{ marketStats.last10minsMarketValue }} ({{ marketStats.percentage10mins }})</p>
-        <p class="text-gray-700 mb-2">Last 30 Minutes Market Value: ${{ marketStats.last30minsMarketValue }} ({{ marketStats.percentage30mins }})</p>
-        <p class="text-gray-700 mb-2">All-Time High: ${{ marketStats.allTimeHigh }}</p>
-        <p class="text-gray-700 mb-2">Market Total: ${{ marketStats.marketTotal }}</p>
+        <p class="text-gray-700 mb-2">Market Value: £{{ marketStats.marketValue }}</p>
+        <p class="text-gray-700 mb-2">Last 5 Minutes Market Value: £{{ marketStats.last5minsMarketValue }} ({{ marketStats.percentage5mins }})</p>
+        <p class="text-gray-700 mb-2">Last 10 Minutes Market Value: £{{ marketStats.last10minsMarketValue }} ({{ marketStats.percentage10mins }})</p>
+        <p class="text-gray-700 mb-2">Last 30 Minutes Market Value: £{{ marketStats.last30minsMarketValue }} ({{ marketStats.percentage30mins }})</p>
+        <p class="text-gray-700 mb-2">All-Time High: £{{ marketStats.allTimeHigh }}</p>
+        <p class="text-gray-700 mb-2">Market Total: £{{ marketStats.marketTotal }}</p>
         
         <h3 class="text-lg font-bold mb-2">Top 3 Coins</h3>
         <ul>
@@ -32,14 +32,14 @@
       </div>
       
       <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        <p class="text-gray-700 mb-2">Current Price: ${{ coin.current_price }}</p>
+        <p class="text-gray-700 mb-2">Current Price: £{{ coin.current_price }}</p>
         <canvas id="priceChart"></canvas>
       </div>
 
       <div v-if="user" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
         <h2 class="text-xl font-bold mb-2">Buy {{ coin.name }}</h2>
         <div class="mb-4">
-          <p class="text-gray-700">Your Funds: ${{ user.funds ? Number(user.funds).toFixed(2) : '0.00' }}</p>
+          <p class="text-gray-700">Your Funds: £{{ user.funds ? Number(user.funds).toFixed(2) : '0.00' }}</p>
         </div>
         <form @submit.prevent="confirmBuy">
           <div class="mb-4">
@@ -47,7 +47,7 @@
             <input v-model.number="buyAmount" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="amount" type="number" min="1" required>
           </div>
           <div class="mb-4">
-            <p class="text-gray-700">Total Cost: ${{ (buyAmount * coin.current_price).toFixed(2) }}</p>
+            <p class="text-gray-700">Total Cost: £{{ (buyAmount * coin.current_price).toFixed(2) }}</p>
           </div>
           <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
             Buy
@@ -58,8 +58,8 @@
       <div v-if="showConfirmation" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
         <div class="bg-white rounded-lg p-8">
           <p class="mb-4">Are you sure you want to buy {{ buyAmount }} of {{ coin.name }}?</p>
-          <p class="mb-4">Each: ${{ coin.current_price }}</p>
-          <p class="mb-4">Total Cost: ${{ (buyAmount * coin.current_price).toFixed(2) }}</p>
+          <p class="mb-4">Each: £{{ coin.current_price }}</p>
+          <p class="mb-4">Total Cost: £{{ (buyAmount * coin.current_price).toFixed(2) }}</p>
           <button @click="executeBuy" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2">Confirm</button>
           <button @click="cancelBuy" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Cancel</button>
         </div>

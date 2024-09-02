@@ -51,11 +51,11 @@ export default {
     marketDetails() {
       return [
         { label: 'Market Value', value: `$${this.marketStats.marketValue}` },
-        { label: 'Last 5 Minutes Market Value', value: `$${this.marketStats.last5minsMarketValue} (${this.marketStats.percentage5mins})` },
-        { label: 'Last 10 Minutes Market Value', value: `$${this.marketStats.last10minsMarketValue} (${this.marketStats.percentage10mins})` },
-        { label: 'Last 30 Minutes Market Value', value: `$${this.marketStats.last30minsMarketValue} (${this.marketStats.percentage30mins})` },
-        { label: 'All-Time High', value: `$${this.marketStats.allTimeHigh}` },
-        { label: 'Market Total', value: `$${this.marketStats.marketTotal}` }
+        { label: 'Last 5 Minutes Market Value', value: `£${this.marketStats.last5minsMarketValue} (${this.marketStats.percentage5mins})` },
+        { label: 'Last 10 Minutes Market Value', value: `£${this.marketStats.last10minsMarketValue} (${this.marketStats.percentage10mins})` },
+        { label: 'Last 30 Minutes Market Value', value: `£${this.marketStats.last30minsMarketValue} (${this.marketStats.percentage30mins})` },
+        { label: 'All-Time High', value: `£${this.marketStats.allTimeHigh}` },
+        { label: 'Market Total', value: `£${this.marketStats.marketTotal}` }
       ];
     },
     top3Coins() {
