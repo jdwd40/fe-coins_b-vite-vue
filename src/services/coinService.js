@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-const API_URL = 'https://jdwd40.com:9001/api/coins/';
-const HISTORY_URL = 'https://jdwd40.com:9001/api/history/';
-const STATS_URL = 'https://jdwd40.com:9001/api/stats';
-const TRANSACTION_URL = 'https://jdwd40.com:9001/api/transactions';
+const API_URL = 'https://jdwd40.com/api/coins/';
+const HISTORY_URL = 'https://jdwd40.com/api/history/';
+const STATS_URL = 'https://jdwd40.com/api/stats';
+const TRANSACTION_URL = 'https://jdwd40.com:/api/transactions';
 
 export const getCoins = async () => {
   try {
