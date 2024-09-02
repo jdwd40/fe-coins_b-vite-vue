@@ -18,7 +18,7 @@
       <div class="bg-white rounded-lg shadow-md p-4 mb-4">
         <h2 @click="toggleSection('event')" class="text-xl font-semibold text-purple-700 cursor-pointer flex justify-between items-center">
           Current Market Event
-          <svg :class="{'rotate-180': openSections.event}" class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+          <svg :class="{'rotate-180': openSections.event}" class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
         </h2>
         <div v-if="openSections.event" class="mt-4">
           <p v-for="(item, index) in eventDetails" :key="index" class="mb-2">
@@ -32,7 +32,7 @@
       <div class="bg-white rounded-lg shadow-md p-4 mb-4">
         <h2 @click="toggleSection('details')" class="text-xl font-semibold text-purple-700 cursor-pointer flex justify-between items-center">
           Market Details
-          <svg :class="{'rotate-180': openSections.details}" class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+          <svg :class="{'rotate-180': openSections.details}" class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
         </h2>
         <div v-if="openSections.details" class="mt-4">
           <p v-for="(item, index) in marketDetails" :key="index" class="mb-2">
@@ -42,16 +42,71 @@
         </div>
       </div>
 
-      <!-- Top 3 Coins Card -->
-      <div class="bg-white rounded-lg shadow-md p-4">
+      <!-- Top 5 Coins Card -->
+      <div class="bg-white rounded-lg shadow-md p-4 mb-4">
         <h2 @click="toggleSection('topCoins')" class="text-xl font-semibold text-purple-700 cursor-pointer flex justify-between items-center">
           Top 5 Coins
-          <svg :class="{'rotate-180': openSections.topCoins}" class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+          <svg :class="{'rotate-180': openSections.topCoins}" class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
         </h2>
         <div v-if="openSections.topCoins" class="mt-4">
-          <div v-for="(coin, index) in top3Coins" :key="index" class="flex justify-between items-center mb-2 p-2 bg-gray-50 rounded">
+          <div v-for="(coin, index) in top5Coins" :key="index" class="flex justify-between items-center mb-2 p-2 bg-gray-50 rounded">
             <span class="font-semibold text-gray-800">{{ coin.name }}</span>
             <span class="text-green-600">{{ coin.price }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Coin Table -->
+      <div class="bg-white rounded-lg shadow-md p-4">
+        <h2 class="text-xl font-semibold text-purple-700 mb-4">All Coins</h2>
+        
+        <!-- Search input -->
+        <div class="mb-4">
+          <input
+            v-model="searchQuery"
+            type="text"
+            placeholder="Search coins..."
+            class="w-full p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+          >
+        </div>
+
+        <!-- Coin list -->
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+          <!-- Table header (visible on md screens and up) -->
+          <div class="hidden md:grid grid-cols-5 gap-4 p-4 bg-purple-100 font-semibold text-purple-700">
+            <div>Name</div>
+            <div>Symbol</div>
+            <div class="text-right">Price</div>
+            <div class="text-right">Market Cap</div>
+            <div class="text-right">Supply</div>
+          </div>
+          <!-- Coin rows -->
+          <div 
+            v-for="coin in filteredCoins" 
+            :key="coin.coin_id" 
+            class="border-b border-gray-200 cursor-pointer hover:bg-gray-50"
+            @click="navigateToCoinDetails(coin.coin_id)"
+          >
+            <!-- Mobile view -->
+            <div class="md:hidden p-4">
+              <div class="flex justify-between items-center">
+                <div>
+                  <h2 class="text-lg font-semibold text-gray-800">{{ coin.name }}</h2>
+                  <p class="text-sm text-gray-600">{{ coin.symbol }}</p>
+                </div>
+                <div class="text-right">
+                  <p class="text-lg font-semibold text-green-600">£{{ formatPrice(coin.current_price) }}</p>
+                </div>
+              </div>
+            </div>
+            <!-- Desktop view -->
+            <div class="hidden md:grid grid-cols-5 gap-4 p-4 items-center">
+              <div class="font-semibold text-gray-800">{{ coin.name }}</div>
+              <div class="text-gray-600">{{ coin.symbol }}</div>
+              <div class="text-right font-semibold text-green-600">£{{ formatPrice(coin.current_price) }}</div>
+              <div class="text-right text-gray-600">£{{ formatLargeNumber(coin.market_cap) }}</div>
+              <div class="text-right text-gray-600">{{ formatLargeNumber(coin.supply) }}</div>
+            </div>
           </div>
         </div>
       </div>
@@ -60,14 +115,16 @@
 </template>
 
 <script>
-import { getMarketStats } from '../services/coinService';
+import { getMarketStats, getCoins } from '../services/coinService';
 
 export default {
   name: 'HomeView',
   data() {
     return {
       marketStats: null,
+      coins: [],
       loading: true,
+      searchQuery: '',
       openSections: {
         event: true,
         details: false,
@@ -77,64 +134,75 @@ export default {
   },
   computed: {
     quickStats() {
-      return [
+      return this.marketStats ? [
         { label: 'Market Value', value: `£${this.marketStats.marketValue}` },
         { label: '5m Change', value: this.marketStats.percentage5mins },
         { label: 'All-Time High', value: `£${this.marketStats.allTimeHigh}` },
-      ];
+      ] : [];
     },
     eventDetails() {
-      return [
+      return this.marketStats ? [
         { label: 'Event Type', value: this.marketStats.event.type },
         { label: 'Start Time', value: this.marketStats.event.start_time },
         { label: 'End Time', value: this.marketStats.event.end_time },
         { label: 'Time Left', value: `${this.marketStats.event.time_left.toFixed(2)} minutes` },
-      ];
+      ] : [];
     },
     marketDetails() {
-      return [
+      return this.marketStats ? [
         { label: 'Market Value', value: `£${this.marketStats.marketValue}` },
         { label: 'Last 5 Minutes', value: `£${this.marketStats.last5minsMarketValue} (${this.marketStats.percentage5mins})` },
         { label: 'Last 10 Minutes', value: `£${this.marketStats.last10minsMarketValue} (${this.marketStats.percentage10mins})` },
         { label: 'Last 30 Minutes', value: `£${this.marketStats.last30minsMarketValue} (${this.marketStats.percentage30mins})` },
         { label: 'All-Time High', value: `£${this.marketStats.allTimeHigh}` },
         { label: 'Market Total', value: `£${this.marketStats.marketTotal}` }
-      ];
+      ] : [];
     },
-    top3Coins() {
-      return this.marketStats.top3Coins.map(coin => ({
+    top5Coins() {
+      return this.marketStats ? this.marketStats.top3Coins.map(coin => ({
         name: coin.name,
         price: `£${coin.price}`
-      }));
+      })) : [];
+    },
+    filteredCoins() {
+      return this.coins.filter(coin =>
+        coin.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+        coin.symbol.toLowerCase().includes(this.searchQuery.toLowerCase())
+      );
     }
   },
   methods: {
     toggleSection(section) {
       this.openSections[section] = !this.openSections[section];
+    },
+    formatPrice(price) {
+      return parseFloat(price).toFixed(2);
+    },
+    formatLargeNumber(number) {
+      return new Intl.NumberFormat('en-GB', { notation: 'compact', compactDisplay: 'short' }).format(number);
+    },
+    async fetchData() {
+      try {
+        this.marketStats = await getMarketStats();
+        this.coins = await getCoins();
+      } catch (error) {
+        console.error('Error loading data:', error);
+      } finally {
+        this.loading = false;
+      }
+    },
+    navigateToCoinDetails(coinId) {
+      this.$router.push({ name: 'CoinDetails', params: { id: coinId } });
     }
   },
-  async created() {
-    try {
-      this.marketStats = await getMarketStats();
-      this.loading = false;
-    } catch (error) {
-      console.error('Error loading market stats:', error);
-      this.loading = false;
-    }
-  },
+  created() {
+    this.fetchData();
+  }
 };
 </script>
 
-<style>
+<style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@600;700&display=swap');
-
-body {
-  font-family: 'Inter', sans-serif;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Poppins', sans-serif;
-}
 
 /* Add any additional custom styles here */
 </style>
