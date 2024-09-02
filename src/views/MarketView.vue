@@ -1,42 +1,59 @@
 <template>
-  <div class="min-h-screen bg-gray-100 p-4">
+  <div class="min-h-screen bg-gray-100 p-4 font-sans">
     <div class="container mx-auto">
-      <h1 class="text-3xl font-bold text-gray-800 mb-6">Market</h1>
-      <el-table
-        :data="coins"
-        border
-        style="width: 100%"
-        @row-click="handleRowClick"
-        :default-sort="{ prop: 'name', order: 'ascending' }"
-      >
-        <el-table-column
-          prop="name"
-          label="Name"
-          sortable
-          width="200"
-        />
-        <el-table-column
-          prop="symbol"
-          label="Symbol"
-          width="100"
-        />
-        <el-table-column
-          prop="current_price"
-          label="Current Price"
-          sortable
-          width="150"
-        />
-        <el-table-column
-          prop="supply"
-          label="Supply"
-          width="150"
-        />
-        <el-table-column
-          prop="market_cap"
-          label="Market Cap"
-          width="150"
-        />
-      </el-table>
+      <h1 class="text-2xl md:text-3xl font-bold text-purple-700 mb-6">Market</h1>
+      
+      <!-- Search input -->
+      <div class="mb-4">
+        <input 
+          v-model="searchQuery" 
+          type="text" 
+          placeholder="Search coins..." 
+          class="w-full p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+        >
+      </div>
+
+      <!-- Coin list -->
+      <div class="bg-white rounded-lg shadow overflow-hidden">
+        <!-- Table header (visible on md screens and up) -->
+        <div class="hidden md:grid grid-cols-5 gap-4 p-4 bg-purple-100 font-semibold text-purple-700">
+          <div>Name</div>
+          <div>Symbol</div>
+          <div class="text-right">Price</div>
+          <div class="text-right">Market Cap</div>
+          <div class="text-right">Supply</div>
+        </div>
+
+        <!-- Coin rows -->
+        <div v-for="coin in filteredCoins" :key="coin.coin_id" @click="handleRowClick(coin)" class="border-b border-gray-200 cursor-pointer hover:bg-gray-50">
+          <!-- Mobile view -->
+          <div class="md:hidden p-4">
+            <div class="flex justify-between items-center">
+              <div>
+                <h2 class="text-lg font-semibold text-gray-800">{{ coin.name }}</h2>
+                <p class="text-sm text-gray-600">{{ coin.symbol }}</p>
+              </div>
+              <div class="text-right">
+                <p class="text-lg font-semibold text-green-600">£{{ formatPrice(coin.current_price) }}</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Desktop view -->
+          <div class="hidden md:grid grid-cols-5 gap-4 p-4 items-center">
+            <div class="font-semibold text-gray-800">{{ coin.name }}</div>
+            <div class="text-gray-600">{{ coin.symbol }}</div>
+            <div class="text-right font-semibold text-green-600">£{{ formatPrice(coin.current_price) }}</div>
+            <div class="text-right text-gray-600">£{{ formatLargeNumber(coin.market_cap) }}</div>
+            <div class="text-right text-gray-600">{{ formatLargeNumber(coin.supply) }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading indicator -->
+      <div v-if="loading" class="text-center py-4">
+        <p class="text-gray-600">Loading...</p>
+      </div>
     </div>
   </div>
 </template>
@@ -50,7 +67,16 @@ export default {
     return {
       coins: [],
       loading: true,
+      searchQuery: '',
     };
+  },
+  computed: {
+    filteredCoins() {
+      return this.coins.filter(coin => 
+        coin.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+        coin.symbol.toLowerCase().includes(this.searchQuery.toLowerCase())
+      );
+    }
   },
   created() {
     this.loadCoins();
@@ -65,39 +91,29 @@ export default {
         this.loading = false;
       }
     },
-    handleRowClick(row) {
-      this.$router.push(`/coin/${row.coin_id}`);
+    handleRowClick(coin) {
+      this.$router.push(`/coin/${coin.coin_id}`);
     },
+    formatPrice(price) {
+      return parseFloat(price).toFixed(2);
+    },
+    formatLargeNumber(number) {
+      return new Intl.NumberFormat('en-GB', { notation: 'compact', compactDisplay: 'short' }).format(number);
+    }
   },
 };
 </script>
 
-<style scoped>
-/* Element UI Custom Styling */
-.el-table {
-  background-color: #ffffff; /* Table background color */
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@600;700&display=swap');
+
+body {
+  font-family: 'Inter', sans-serif;
 }
 
-.el-table th {
-  background-color: #4A5568; /* Darker header background for better contrast */
-  color: #f7fafc; /* Light header text color */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Poppins', sans-serif;
 }
 
-.el-table td {
-  background-color: #f7fafc; /* Light cell background */
-  color: #2D3748; /* Dark text color for better readability */
-}
-
-.el-table .cell {
-  padding: 12px; /* Adjusted cell padding for better spacing */
-}
-
-.el-table__header-wrapper {
-  border-bottom: 2px solid #CBD5E0; /* Light border for header */
-}
-
-/* Optional: Hover effect for rows */
-.el-table-row:hover {
-  background-color: #E2E8F0; /* Slightly darker background on hover */
-}
+/* Add any additional custom styles here */
 </style>

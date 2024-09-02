@@ -1,67 +1,87 @@
 <template>
-  <div class="min-h-screen bg-gray-100 p-4">
-    <div v-if="loading" class="container mx-auto">
+  <div class="min-h-screen bg-gray-100 p-4 font-sans">
+    <div v-if="loading" class="container mx-auto text-center">
       <p class="text-gray-700">Loading...</p>
     </div>
     <div v-else-if="coin" class="container mx-auto">
-      <h1 class="text-3xl font-bold text-gray-800 mb-6">{{ coin.name }} ({{ coin.symbol }})</h1>
+      <h1 class="text-2xl md:text-3xl font-bold text-purple-700 mb-6">{{ coin.name }} ({{ coin.symbol }})</h1>
       
-      <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" v-if="marketStats">
-        <h2 class="text-xl font-bold mb-2">Market Details</h2>
-        <p class="text-gray-700 mb-2">Market Value: £{{ marketStats.marketValue }}</p>
-        <p class="text-gray-700 mb-2">Last 5 Minutes Market Value: £{{ marketStats.last5minsMarketValue }} ({{ marketStats.percentage5mins }})</p>
-        <p class="text-gray-700 mb-2">Last 10 Minutes Market Value: £{{ marketStats.last10minsMarketValue }} ({{ marketStats.percentage10mins }})</p>
-        <p class="text-gray-700 mb-2">Last 30 Minutes Market Value: £{{ marketStats.last30minsMarketValue }} ({{ marketStats.percentage30mins }})</p>
-        <p class="text-gray-700 mb-2">All-Time High: £{{ marketStats.allTimeHigh }}</p>
-        <p class="text-gray-700 mb-2">Market Total: £{{ marketStats.marketTotal }}</p>
-        
-        <h3 class="text-lg font-bold mb-2">Top 3 Coins</h3>
-        <ul>
-          <li v-for="coin in marketStats.top3Coins" :key="coin.name" class="text-gray-700 mb-2">{{ coin.name }}: ${{ coin.price }}</li>
-        </ul>
+      <!-- Current Price Card -->
+      <div class="bg-white shadow-md rounded-lg p-4 mb-4">
+        <h2 class="text-xl font-semibold text-gray-800 mb-2">Current Price</h2>
+        <p class="text-3xl font-bold text-green-600">£{{ formatPrice(coin.current_price) }}</p>
       </div>
 
-      <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" v-if="event">
-        <h2 class="text-xl font-bold mb-2">Current Coin Event</h2>
-        <p class="text-gray-700 mb-2">Type: {{ event.type }}</p>
-        <p class="text-gray-700 mb-2">Impact: {{ event.impact }}</p>
-        <p class="text-gray-700 mb-2">Start Time: {{ event.start_time }}</p>
-        <p class="text-gray-700 mb-2">End Time: {{ event.end_time }}</p>
-        <p class="text-gray-700 mb-2">Duration: {{ event.duration }}</p>
-        <p class="text-gray-700 mb-2">Positive Impact: {{ event.is_positive ? 'Yes' : 'No' }}</p>
-      </div>
-      
-      <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        <p class="text-gray-700 mb-2">Current Price: £{{ coin.current_price }}</p>
-        <canvas id="priceChart"></canvas>
-      </div>
-
-      <div v-if="user" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        <h2 class="text-xl font-bold mb-2">Buy {{ coin.name }}</h2>
-        <div class="mb-4">
-          <p class="text-gray-700">Your Funds: £{{ user.funds ? Number(user.funds).toFixed(2) : '0.00' }}</p>
+      <!-- Price Chart -->
+      <div class="bg-white shadow-md rounded-lg p-4 mb-4">
+        <h2 class="text-xl font-semibold text-gray-800 mb-2">Price History (Last Hour)</h2>
+        <div class="chart-container" style="position: relative; height:300px; width:100%">
+          <canvas id="priceChart"></canvas>
         </div>
+      </div>
+
+      <!-- Current Coin Event -->
+      <div v-if="event" class="bg-white shadow-md rounded-lg p-4 mb-4">
+        <h2 class="text-xl font-semibold text-gray-800 mb-2">Current Coin Event</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+          <p class="text-gray-700"><span class="font-semibold">Type:</span> {{ event.type }}</p>
+          <p class="text-gray-700"><span class="font-semibold">Impact:</span> {{ event.impact }}</p>
+          <p class="text-gray-700"><span class="font-semibold">Start Time:</span> {{ formatDate(event.start_time) }}</p>
+          <p class="text-gray-700"><span class="font-semibold">End Time:</span> {{ formatDate(event.end_time) }}</p>
+          <p class="text-gray-700"><span class="font-semibold">Duration:</span> {{ event.duration }}</p>
+          <p class="text-gray-700"><span class="font-semibold">Positive Impact:</span> {{ event.is_positive ? 'Yes' : 'No' }}</p>
+        </div>
+      </div>
+
+      <!-- Market Details -->
+      <div v-if="marketStats" class="bg-white shadow-md rounded-lg p-4 mb-4">
+        <h2 class="text-xl font-semibold text-gray-800 mb-2">Market Details</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+          <p class="text-gray-700"><span class="font-semibold">Market Value:</span> £{{ formatLargeNumber(marketStats.marketValue) }}</p>
+          <p class="text-gray-700"><span class="font-semibold">Last 5 Minutes:</span> £{{ formatLargeNumber(marketStats.last5minsMarketValue) }} ({{ marketStats.percentage5mins }})</p>
+          <p class="text-gray-700"><span class="font-semibold">Last 10 Minutes:</span> £{{ formatLargeNumber(marketStats.last10minsMarketValue) }} ({{ marketStats.percentage10mins }})</p>
+          <p class="text-gray-700"><span class="font-semibold">Last 30 Minutes:</span> £{{ formatLargeNumber(marketStats.last30minsMarketValue) }} ({{ marketStats.percentage30mins }})</p>
+          <p class="text-gray-700"><span class="font-semibold">All-Time High:</span> £{{ formatLargeNumber(marketStats.allTimeHigh) }}</p>
+          <p class="text-gray-700"><span class="font-semibold">Market Total:</span> £{{ formatLargeNumber(marketStats.marketTotal) }}</p>
+        </div>
+
+        <h3 class="text-lg font-semibold text-gray-800 mt-4 mb-2">Top 5 Coins</h3>
+        <div class="grid grid-cols-3 gap-2">
+          <div v-for="topCoin in marketStats.top3Coins" :key="topCoin.name" class="text-center">
+            <p class="font-semibold text-gray-800">{{ topCoin.name }}</p>
+            <p class="text-green-600">£{{ formatPrice(topCoin.price) }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Buy Form -->
+      <div v-if="user" class="bg-white shadow-md rounded-lg p-4 mb-4">
+        <h2 class="text-xl font-semibold text-gray-800 mb-2">Buy {{ coin.name }}</h2>
+        <p class="text-gray-700 mb-2">Your Funds: £{{ formatPrice(user.funds) }}</p>
         <form @submit.prevent="confirmBuy">
           <div class="mb-4">
             <label class="block text-gray-700 text-sm font-bold mb-2" for="amount">Amount</label>
             <input v-model.number="buyAmount" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="amount" type="number" min="1" required>
           </div>
           <div class="mb-4">
-            <p class="text-gray-700">Total Cost: £{{ (buyAmount * coin.current_price).toFixed(2) }}</p>
+            <p class="text-gray-700">Total Cost: £{{ formatPrice(buyAmount * coin.current_price) }}</p>
           </div>
-          <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+          <button class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
             Buy
           </button>
         </form>
       </div>
 
+      <!-- Confirmation Modal -->
       <div v-if="showConfirmation" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
         <div class="bg-white rounded-lg p-8">
-          <p class="mb-4">Are you sure you want to buy {{ buyAmount }} of {{ coin.name }}?</p>
-          <p class="mb-4">Each: £{{ coin.current_price }}</p>
-          <p class="mb-4">Total Cost: £{{ (buyAmount * coin.current_price).toFixed(2) }}</p>
-          <button @click="executeBuy" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2">Confirm</button>
-          <button @click="cancelBuy" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Cancel</button>
+          <p class="mb-4 text-gray-800">Are you sure you want to buy {{ buyAmount }} of {{ coin.name }}?</p>
+          <p class="mb-4 text-gray-800">Each: £{{ formatPrice(coin.current_price) }}</p>
+          <p class="mb-4 text-gray-800">Total Cost: £{{ formatPrice(buyAmount * coin.current_price) }}</p>
+          <div class="flex justify-end">
+            <button @click="executeBuy" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2">Confirm</button>
+            <button @click="cancelBuy" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Cancel</button>
+          </div>
         </div>
       </div>
 
@@ -110,12 +130,14 @@ export default {
             datasets: [{
               label: 'Price History (Last Hour)',
               data: data,
-              borderColor: 'rgba(75, 192, 192, 1)',
-              borderWidth: 1,
+              borderColor: 'rgba(109, 40, 217, 1)',  // Purple color
+              borderWidth: 2,
               fill: false,
             }],
           },
           options: {
+            responsive: true,
+            maintainAspectRatio: false,
             scales: {
               x: {
                 type: 'time',
@@ -138,22 +160,21 @@ export default {
                   display: true,
                   text: 'Price',
                 },
+                ticks: {
+                  callback: function(value, index, values) {
+                    return '£' + value.toFixed(2);
+                  }
+                }
               },
             },
             plugins: {
               legend: {
-                display: true,
-                position: 'top',
+                display: false,
               },
               tooltip: {
                 callbacks: {
                   label: function(context) {
-                    let label = context.dataset.label || '';
-                    if (label) {
-                      label += ': ';
-                    }
-                    label += context.parsed.y.toFixed(2);
-                    return label;
+                    return `£${context.parsed.y.toFixed(2)}`;
                   },
                 },
               },
@@ -188,6 +209,15 @@ export default {
     cancelBuy() {
       this.showConfirmation = false;
     },
+    formatPrice(price) {
+      return parseFloat(price).toFixed(2);
+    },
+    formatLargeNumber(number) {
+      return new Intl.NumberFormat('en-GB', { notation: 'compact', compactDisplay: 'short' }).format(number);
+    },
+    formatDate(dateString) {
+      return new Date(dateString).toLocaleString();
+    },
   },
   async created() {
     const coinId = this.$route.params.id;
@@ -207,3 +237,21 @@ export default {
   },
 };
 </script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@600;700&display=swap');
+
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Poppins', sans-serif;
+}
+
+.chart-container {
+  position: relative;
+  height: 300px;
+  width: 100%;
+}
+</style>
