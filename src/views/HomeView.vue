@@ -8,7 +8,7 @@
       <div class="overflow-x-auto whitespace-nowrap mb-4 py-2 bg-white rounded-lg shadow">
         <div class="inline-block px-3 py-1" v-for="(stat, index) in quickStats" :key="index">
           <span class="font-semibold text-purple-700">{{ stat.label }}:</span>
-          <span class="text-gray-800">{{ stat.value }}</span>
+          <span :class="stat.class">{{ stat.value }}</span>
         </div>
       </div>
 
@@ -22,8 +22,8 @@
         </h2>
         <div v-if="openSections.event" class="mt-4">
           <p v-for="(item, index) in eventDetails" :key="index" class="mb-2">
-            <span class="font-semibold text-gray-700">{{ item.label }}:</span>
-            <span class="text-gray-800">{{ item.value }}</span>
+            <span class="font-semibold text-gray-700">{{ item.label }}: </span>
+            <span :class="item.class">{{ item.value }}</span>
           </p>
         </div>
       </div>
@@ -36,8 +36,8 @@
         </h2>
         <div v-if="openSections.details" class="mt-4">
           <p v-for="(item, index) in marketDetails" :key="index" class="mb-2">
-            <span class="font-semibold text-gray-700">{{ item.label }}:</span>
-            <span class="text-gray-800">{{ item.value }}</span>
+            <span class="font-semibold text-gray-700">{{ item.label }}: </span>
+            <span :class="item.class">{{ item.value }}</span>
           </p>
         </div>
       </div>
@@ -73,7 +73,7 @@
         <!-- Coin list -->
         <div class="bg-white rounded-lg shadow overflow-hidden">
           <!-- Table header (visible on md screens and up) -->
-          <div class="hidden md:grid grid-cols-5 gap-4 p-4 bg-purple-100 font-semibold text-purple-700">
+          <div class="hidden md:grid grid-cols-5 gap-4 p-4 bg-purple-700 text-white font-semibold">
             <div>Name</div>
             <div>Symbol</div>
             <div class="text-right">Price</div>
@@ -82,9 +82,10 @@
           </div>
           <!-- Coin rows -->
           <div 
-            v-for="coin in filteredCoins" 
+            v-for="(coin, index) in filteredCoins" 
             :key="coin.coin_id" 
-            class="border-b border-gray-200 cursor-pointer hover:bg-gray-50"
+            class="border-b border-gray-200 cursor-pointer transition duration-150 ease-in-out"
+            :class="{'bg-purple-50': index % 2 === 0, 'hover:bg-purple-100': true}"
             @click="navigateToCoinDetails(coin.coin_id)"
           >
             <!-- Mobile view -->
@@ -92,7 +93,7 @@
               <div class="flex justify-between items-center">
                 <div>
                   <h2 class="text-lg font-semibold text-gray-800">{{ coin.name }}</h2>
-                  <p class="text-sm text-gray-600">{{ coin.symbol }}</p>
+                  <p class="text-sm text-purple-600">{{ coin.symbol }}</p>
                 </div>
                 <div class="text-right">
                   <p class="text-lg font-semibold text-green-600">£{{ formatPrice(coin.current_price) }}</p>
@@ -102,7 +103,7 @@
             <!-- Desktop view -->
             <div class="hidden md:grid grid-cols-5 gap-4 p-4 items-center">
               <div class="font-semibold text-gray-800">{{ coin.name }}</div>
-              <div class="text-gray-600">{{ coin.symbol }}</div>
+              <div class="text-purple-600">{{ coin.symbol }}</div>
               <div class="text-right font-semibold text-green-600">£{{ formatPrice(coin.current_price) }}</div>
               <div class="text-right text-gray-600">£{{ formatLargeNumber(coin.market_cap) }}</div>
               <div class="text-right text-gray-600">{{ formatLargeNumber(coin.supply) }}</div>
@@ -134,29 +135,33 @@ export default {
   },
   computed: {
     quickStats() {
-      return this.marketStats ? [
-        { label: 'Market Value', value: `£${this.marketStats.marketValue}` },
-        { label: '5m Change', value: this.marketStats.percentage5mins },
-        { label: 'All-Time High', value: `£${this.marketStats.allTimeHigh}` },
-      ] : [];
+      if (!this.marketStats) return [];
+      const changeClass = this.getChangeClass(this.marketStats.percentage5mins);
+      return [
+        { label: 'Market Value', value: `£${this.marketStats.marketValue}`, class: 'text-gray-800' },
+        { label: '5m Change', value: this.marketStats.percentage5mins, class: changeClass },
+        { label: 'All-Time High', value: `£${this.marketStats.allTimeHigh}`, class: 'text-gray-800' },
+      ];
     },
     eventDetails() {
-      return this.marketStats ? [
-        { label: 'Event Type', value: this.marketStats.event.type },
-        { label: 'Start Time', value: this.marketStats.event.start_time },
-        { label: 'End Time', value: this.marketStats.event.end_time },
-        { label: 'Time Left', value: `${this.marketStats.event.time_left.toFixed(2)} minutes` },
-      ] : [];
+      if (!this.marketStats) return [];
+      const eventType = this.marketStats.event.type;
+      const eventClass = eventType.toLowerCase() === 'bust' ? 'text-red-600 uppercase text-sm' : 'text-green-600 uppercase text-sm';
+      return [
+        { label: 'Event Type', value: eventType, class: eventClass },
+        { label: 'Time Left', value: `${this.marketStats.event.time_left.toFixed(2)} minutes`, class: 'text-gray-800' },
+      ];
     },
     marketDetails() {
-      return this.marketStats ? [
-        { label: 'Market Value', value: `£${this.marketStats.marketValue}` },
-        { label: 'Last 5 Minutes', value: `£${this.marketStats.last5minsMarketValue} (${this.marketStats.percentage5mins})` },
-        { label: 'Last 10 Minutes', value: `£${this.marketStats.last10minsMarketValue} (${this.marketStats.percentage10mins})` },
-        { label: 'Last 30 Minutes', value: `£${this.marketStats.last30minsMarketValue} (${this.marketStats.percentage30mins})` },
-        { label: 'All-Time High', value: `£${this.marketStats.allTimeHigh}` },
-        { label: 'Market Total', value: `£${this.marketStats.marketTotal}` }
-      ] : [];
+      if (!this.marketStats) return [];
+      return [
+        { label: 'Market Value', value: `£${this.marketStats.marketValue}`, class: 'text-gray-800' },
+        { label: 'Last 5 Minutes', value: `£${this.marketStats.last5minsMarketValue} (${this.marketStats.percentage5mins})`, class: this.getChangeClass(this.marketStats.percentage5mins) },
+        { label: 'Last 10 Minutes', value: `£${this.marketStats.last10minsMarketValue} (${this.marketStats.percentage10mins})`, class: this.getChangeClass(this.marketStats.percentage10mins) },
+        { label: 'Last 30 Minutes', value: `£${this.marketStats.last30minsMarketValue} (${this.marketStats.percentage30mins})`, class: this.getChangeClass(this.marketStats.percentage30mins) },
+        { label: 'All-Time High', value: `£${this.marketStats.allTimeHigh}`, class: 'text-gray-800' },
+        { label: 'Market Total', value: `£${this.marketStats.marketTotal}`, class: 'text-gray-800' }
+      ];
     },
     top5Coins() {
       return this.marketStats ? this.marketStats.top3Coins.map(coin => ({
@@ -193,6 +198,10 @@ export default {
     },
     navigateToCoinDetails(coinId) {
       this.$router.push({ name: 'CoinDetails', params: { id: coinId } });
+    },
+    getChangeClass(change) {
+      const numChange = parseFloat(change);
+      return numChange < 0 ? 'text-red-600' : 'text-green-600';
     }
   },
   created() {
