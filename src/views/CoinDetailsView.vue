@@ -109,7 +109,7 @@ export default {
           data: {
             labels: labels,
             datasets: [{
-              label: 'Price History (Last Hour)',
+              label: 'Price History (30 mins)',
               data: data,
               borderColor: 'rgba(109, 40, 217, 1)',  // Purple color
               borderWidth: 2,
