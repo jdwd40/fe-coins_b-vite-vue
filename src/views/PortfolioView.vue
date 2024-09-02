@@ -14,16 +14,16 @@
         <table class="min-w-full bg-white shadow-md rounded mb-4">
           <thead>
             <tr>
-              <th class="py-2 px-4 bg-blue-500 text-white">Coin</th>
-              <th class="py-2 px-4 bg-blue-500 text-white">Amount</th>
-              <th class="py-2 px-4 bg-blue-500 text-white">Current Price</th>
-              <th class="py-2 px-4 bg-blue-500 text-white">Value</th>
+              <th class="py-2 px-4 bg-blue-500 text-white text-left">Coin</th>
+              <th class="py-2 px-4 bg-blue-500 text-white text-left">Amount</th>
+              <th class="py-2 px-4 bg-blue-500 text-white text-left">Current Price</th>
+              <th class="py-2 px-4 bg-blue-500 text-white text-left">Value</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="coin in portfolio" :key="coin.portfolio_id">
               <td class="border px-4 py-2 text-gray-800">{{ coin.name }}</td>
-              <td class="border px-4 py-2 text-gray-800">{{ coin.amount }}</td>
+              <td class="border px-4 py-2 text-gray-800">{{ formatCoinAmount(coin.amount) }}</td>
               <td class="border px-4 py-2 text-gray-800">£{{ coin.current_price }}</td>
               <td class="border px-4 py-2 text-gray-800">£{{ (coin.amount * coin.current_price).toFixed(2) }}</td>
             </tr>
@@ -60,7 +60,7 @@
         <!-- Confirmation Modal -->
         <div v-if="showConfirmation" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
           <div class="bg-white rounded-lg p-8">
-            <p class="mb-4 text-gray-800">Are you sure you want to sell {{ sellAmount }} of {{ selectedCoin ? selectedCoin.name : '' }}?</p>
+            <p class="mb-4 text-gray-800">Are you sure you want to sell {{ formatCoinAmount(sellAmount) }} of {{ selectedCoin ? selectedCoin.name : '' }}?</p>
             <p class="mb-4 text-gray-800">Each: £{{ selectedCoin ? selectedCoin.current_price : '' }}</p>
             <p class="mb-4 text-gray-800">Total Sale Value: £{{ selectedCoin ? (sellAmount * selectedCoin.current_price).toFixed(2) : '0.00' }}</p>
             <div class="flex justify-end">
@@ -100,6 +100,10 @@ export default {
   },
   methods: {
     ...mapMutations(['setUser']),
+    formatCoinAmount(amount) {
+      // Convert to a number and remove trailing zeros
+      return parseFloat(amount).toString();
+    },
     confirmSell() {
       if (this.selectedCoin) {
         this.showConfirmation = true;
