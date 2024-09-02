@@ -50,7 +50,7 @@ export default {
   computed: {
     marketDetails() {
       return [
-        { label: 'Market Value', value: `$${this.marketStats.marketValue}` },
+        { label: 'Market Value', value: `£${this.marketStats.marketValue}` },
         { label: 'Last 5 Minutes Market Value', value: `£${this.marketStats.last5minsMarketValue} (${this.marketStats.percentage5mins})` },
         { label: 'Last 10 Minutes Market Value', value: `£${this.marketStats.last10minsMarketValue} (${this.marketStats.percentage10mins})` },
         { label: 'Last 30 Minutes Market Value', value: `£${this.marketStats.last30minsMarketValue} (${this.marketStats.percentage30mins})` },
@@ -61,7 +61,7 @@ export default {
     top3Coins() {
       return this.marketStats.top3Coins.map(coin => ({
         name: coin.name,
-        price: `$${coin.price}`
+        price: `£${coin.price}`
       }));
     }
   },
