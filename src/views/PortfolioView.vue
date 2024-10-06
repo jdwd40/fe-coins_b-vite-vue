@@ -1,61 +1,61 @@
 <template>
-  <div class="min-h-screen bg-gray-100 p-4 font-sans">
+  <div class="min-h-screen bg-gray-900 p-4 font-sans">
     <div class="container mx-auto">
-      <h1 class="text-2xl md:text-3xl font-bold text-purple-700 mb-6">Portfolio</h1>
-      <div v-if="loading" class="text-gray-700">Loading...</div>
+      <h1 class="text-2xl md:text-3xl font-bold text-gray-100 mb-6">Portfolio</h1>
+      <div v-if="loading" class="text-gray-400">Loading...</div>
       <div v-else>
         <!-- User Info -->
-        <div class="bg-white shadow-md rounded-lg px-6 py-4 mb-6">
-          <h2 class="text-xl font-semibold text-gray-800 mb-2">User Information</h2>
-          <p class="text-gray-700"><strong>Username:</strong> {{ user.username }}</p>
-          <p class="text-gray-700"><strong>Available Funds:</strong> £{{ formattedFunds }}</p>
+        <div class="bg-gray-800 shadow-md rounded-lg px-6 py-4 mb-6">
+          <h2 class="text-xl font-semibold text-gray-100 mb-2">User Information</h2>
+          <p class="text-gray-300"><strong>Username:</strong> {{ user.username }}</p>
+          <p class="text-gray-300"><strong>Available Funds:</strong> £{{ formattedFunds }}</p>
         </div>
         
         <!-- Portfolio Table -->
-        <div class="bg-white shadow-md rounded-lg overflow-hidden mb-6">
-          <h2 class="text-xl font-semibold text-gray-800 px-6 py-4 bg-gray-50">Your Coins</h2>
+        <div class="bg-gray-800 shadow-md rounded-lg overflow-hidden mb-6">
+          <h2 class="text-xl font-semibold text-gray-100 px-6 py-4 bg-gray-700">Your Coins</h2>
           <div class="overflow-x-auto">
             <table class="min-w-full">
               <thead>
-                <tr class="bg-purple-100">
-                  <th class="py-3 px-4 text-left text-purple-700">Coin</th>
-                  <th class="py-3 px-4 text-left text-purple-700">Amount</th>
-                  <th class="py-3 px-4 text-left text-purple-700">Current Price</th>
-                  <th class="py-3 px-4 text-left text-purple-700">Value</th>
+                <tr class="bg-gray-700">
+                  <th class="py-3 px-4 text-left text-gray-300">Coin</th>
+                  <th class="py-3 px-4 text-left text-gray-300">Amount</th>
+                  <th class="py-3 px-4 text-left text-gray-300">Current Price</th>
+                  <th class="py-3 px-4 text-left text-gray-300">Value</th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="coin in portfolio" :key="coin.portfolio_id" class="border-b border-gray-200">
-                  <td class="py-3 px-4 text-gray-800">{{ coin.name }}</td>
-                  <td class="py-3 px-4 text-gray-800">{{ formatCoinAmount(coin.amount) }}</td>
-                  <td class="py-3 px-4 text-gray-800">£{{ formatPrice(coin.current_price) }}</td>
-                  <td class="py-3 px-4 text-gray-800">£{{ formatPrice(coin.amount * coin.current_price) }}</td>
+                <tr v-for="coin in portfolio" :key="coin.portfolio_id" class="border-b border-gray-600">
+                  <td class="py-3 px-4 text-gray-300">{{ coin.name }}</td>
+                  <td class="py-3 px-4 text-gray-300">{{ formatCoinAmount(coin.amount) }}</td>
+                  <td class="py-3 px-4 text-gray-300">£{{ formatPrice(coin.current_price) }}</td>
+                  <td class="py-3 px-4 text-gray-300">£{{ formatPrice(coin.amount * coin.current_price) }}</td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
         
-        <div class="bg-white shadow-md rounded-lg px-6 py-4 mb-6">
-          <p class="text-xl font-semibold text-gray-800">Total Portfolio Value: £{{ formatPrice(totalValue) }}</p>
+        <div class="bg-gray-800 shadow-md rounded-lg px-6 py-4 mb-6">
+          <p class="text-xl font-semibold text-gray-100">Total Portfolio Value: £{{ formatPrice(totalValue) }}</p>
         </div>
 
         <!-- Sell Form -->
-        <div class="bg-white shadow-md rounded-lg px-6 py-4 mb-6">
-          <h2 class="text-xl font-semibold text-gray-800 mb-4">Sell Coins</h2>
+        <div class="bg-gray-800 shadow-md rounded-lg px-6 py-4 mb-6">
+          <h2 class="text-xl font-semibold text-gray-100 mb-4">Sell Coins</h2>
           <form @submit.prevent="confirmSell">
             <div class="mb-4">
-              <label class="block text-gray-700 text-sm font-bold mb-2" for="coin">Coin</label>
-              <select v-model="selectedCoin" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" id="coin" required>
+              <label class="block text-gray-300 text-sm font-bold mb-2" for="coin">Coin</label>
+              <select v-model="selectedCoin" class="w-full p-2 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 bg-gray-700 text-gray-300" id="coin" required>
                 <option v-for="coin in portfolio" :key="coin.portfolio_id" :value="coin">{{ coin.name }}</option>
               </select>
             </div>
             <div class="mb-4">
-              <label class="block text-gray-700 text-sm font-bold mb-2" for="amount">Amount</label>
-              <input v-model.number="sellAmount" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" id="amount" type="number" :max="selectedCoin ? selectedCoin.amount : 0" min="1" required>
+              <label class="block text-gray-300 text-sm font-bold mb-2" for="amount">Amount</label>
+              <input v-model.number="sellAmount" class="w-full p-2 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 bg-gray-700 text-gray-300" id="amount" type="number" :max="selectedCoin ? selectedCoin.amount : 0" min="1" required>
             </div>
             <div class="mb-4">
-              <p class="text-gray-700">Total Sale Value: £{{ selectedCoin ? formatPrice(sellAmount * selectedCoin.current_price) : '0.00' }}</p>
+              <p class="text-gray-300">Total Sale Value: £{{ selectedCoin ? formatPrice(sellAmount * selectedCoin.current_price) : '0.00' }}</p>
             </div>
             <button class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
               Sell
@@ -65,11 +65,11 @@
 
         <!-- Confirmation Modal -->
         <div v-if="showConfirmation" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-          <div class="bg-white rounded-lg p-8">
-            <h3 class="text-xl font-semibold text-gray-800 mb-4">Confirm Sale</h3>
-            <p class="mb-4 text-gray-700">Are you sure you want to sell {{ formatCoinAmount(sellAmount) }} of {{ selectedCoin ? selectedCoin.name : '' }}?</p>
-            <p class="mb-4 text-gray-700">Price per coin: £{{ selectedCoin ? formatPrice(selectedCoin.current_price) : '' }}</p>
-            <p class="mb-4 text-gray-700">Total Sale Value: £{{ selectedCoin ? formatPrice(sellAmount * selectedCoin.current_price) : '0.00' }}</p>
+          <div class="bg-gray-800 rounded-lg p-8">
+            <h3 class="text-xl font-semibold text-gray-100 mb-4">Confirm Sale</h3>
+            <p class="mb-4 text-gray-300">Are you sure you want to sell {{ formatCoinAmount(sellAmount) }} of {{ selectedCoin ? selectedCoin.name : '' }}?</p>
+            <p class="mb-4 text-gray-300">Price per coin: £{{ selectedCoin ? formatPrice(selectedCoin.current_price) : '' }}</p>
+            <p class="mb-4 text-gray-300">Total Sale Value: £{{ selectedCoin ? formatPrice(sellAmount * selectedCoin.current_price) : '0.00' }}</p>
             <div class="flex justify-end">
               <button @click="executeSell" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2">Confirm</button>
               <button @click="cancelSell" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Cancel</button>
