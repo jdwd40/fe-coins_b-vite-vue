@@ -1,48 +1,48 @@
 <template>
-  <div class="min-h-screen bg-gray-100 p-4 font-sans">
+  <div class="min-h-screen bg-gray-900 p-4 font-sans">
     <div v-if="loading" class="container mx-auto text-center">
-      <p class="text-gray-700">Loading...</p>
+      <p class="text-gray-400">Loading...</p>
     </div>
     <div v-else-if="coin" class="container mx-auto">
-      <h1 class="text-2xl md:text-3xl font-bold text-purple-700 mb-6">{{ coin.name }} ({{ coin.symbol }})</h1>
+      <h1 class="text-2xl md:text-3xl font-bold text-gray-100 mb-6">{{ coin.name }} ({{ coin.symbol }})</h1>
       
       <!-- Current Price Card -->
-      <div class="bg-white shadow-md rounded-lg p-4 mb-4">
-        <h2 class="text-xl font-semibold text-gray-800 mb-2">Current Price</h2>
-        <p class="text-3xl font-bold text-green-600">£{{ formatPrice(coin.current_price) }}</p>
+      <div class="bg-gray-800 shadow-md rounded-lg p-4 mb-4">
+        <h2 class="text-xl font-semibold text-gray-100 mb-2">Current Price</h2>
+        <p class="text-3xl font-bold text-green-400">£{{ formatPrice(coin.current_price) }}</p>
         <p :class="getChangeClass(changes.fiveMin)" class="text-lg mt-2">
           Last 5 mins: {{ formatPercentage(changes.fiveMin) }}
         </p>
       </div>
 
       <!-- Price Chart -->
-      <div class="bg-white shadow-md rounded-lg p-4 mb-4">
-        <h2 class="text-xl font-semibold text-gray-800 mb-2">Price History (30mins)</h2>
+      <div class="bg-gray-800 shadow-md rounded-lg p-4 mb-4">
+        <h2 class="text-xl font-semibold text-gray-100 mb-2">Price History (30mins)</h2>
         <div class="chart-container" style="position: relative; height:300px; width:100%">
           <canvas id="priceChart"></canvas>
         </div>
       </div>
 
       <!-- Current Coin Event -->
-      <div v-if="event" class="bg-white shadow-md rounded-lg p-4 mb-4">
-        <h2 class="text-xl font-semibold text-gray-800 mb-2">Current Coin Event</h2>
+      <div v-if="event" class="bg-gray-800 shadow-md rounded-lg p-4 mb-4">
+        <h2 class="text-xl font-semibold text-gray-100 mb-2">Current Coin Event</h2>
         <div class="flex items-center mb-4">
           <span :class="event.is_positive ? 'bg-green-500' : 'bg-red-500'" class="px-3 py-1 rounded-full text-white font-semibold mr-2">
             {{ event.is_positive ? 'POSITIVE' : 'NEGATIVE' }}
           </span>
-          <span class="text-gray-700 font-semibold">{{ event.type }}</span>
+          <span class="text-gray-300 font-semibold">{{ event.type }}</span>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-          <p class="text-gray-700"><span class="font-semibold">Impact:</span> {{ event.impact }}</p>
-          <p class="text-gray-700"><span class="font-semibold">Duration:</span> {{ event.duration }}</p>
+          <p class="text-gray-300"><span class="font-semibold">Impact:</span> {{ event.impact }}</p>
+          <p class="text-gray-300"><span class="font-semibold">Duration:</span> {{ event.duration }}</p>
         </div>
       </div>
 
       <!-- Market Details -->
-      <div class="bg-white shadow-md rounded-lg p-4 mb-4">
-        <h2 class="text-xl font-semibold text-gray-800 mb-2">Market Details</h2>
+      <div class="bg-gray-800 shadow-md rounded-lg p-4 mb-4">
+        <h2 class="text-xl font-semibold text-gray-100 mb-2">Market Details</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-          <p class="text-gray-700"><span class="font-semibold">Market Value:</span> £{{ formatLargeNumber(coin.market_cap) }}</p>
+          <p class="text-gray-300"><span class="font-semibold">Market Value:</span> £{{ formatLargeNumber(coin.market_cap) }}</p>
           <p :class="getChangeClass(changes.fiveMin)">
             <span class="font-semibold">Last 5 Minutes:</span> £{{ formatPrice(changes.fiveMinPrice) }} ({{ formatPercentage(changes.fiveMin) }})
           </p>
@@ -52,8 +52,8 @@
           <p :class="getChangeClass(changes.thirtyMin)">
             <span class="font-semibold">Last 30 Minutes:</span> £{{ formatPrice(changes.thirtyMinPrice) }} ({{ formatPercentage(changes.thirtyMin) }})
           </p>
-          <p class="text-gray-700"><span class="font-semibold">All-Time High:</span> £{{ formatPrice(coin.ath) }}</p>
-          <p class="text-gray-700"><span class="font-semibold">24h Volume:</span> £{{ formatLargeNumber(coin.total_volume) }}</p>
+          <p class="text-gray-300"><span class="font-semibold">All-Time High:</span> £{{ formatPrice(coin.ath) }}</p>
+          <p class="text-gray-300"><span class="font-semibold">24h Volume:</span> £{{ formatLargeNumber(coin.total_volume) }}</p>
         </div>
       </div>
 
@@ -231,7 +231,7 @@ export default {
       return `${value.toFixed(2)}%`;
     },
     getChangeClass(change) {
-      return change < 0 ? 'text-red-600' : 'text-green-600';
+      return change < 0 ? 'text-red-400' : 'text-green-400';
     },
   },
   async created() {
