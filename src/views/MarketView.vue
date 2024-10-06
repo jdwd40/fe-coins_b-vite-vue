@@ -1,7 +1,7 @@
 <template>
-  <div class="min-h-screen bg-gray-100 p-4 font-sans">
+  <div class="min-h-screen bg-gray-900 p-4 font-sans">
     <div class="container mx-auto">
-      <h1 class="text-2xl md:text-3xl font-bold text-purple-700 mb-6">Market</h1>
+      <h1 class="text-2xl md:text-3xl font-bold text-gray-100 mb-6">Market</h1>
       
       <!-- Search input -->
       <div class="mb-4">
@@ -9,14 +9,14 @@
           v-model="searchQuery" 
           type="text" 
           placeholder="Search coins..." 
-          class="w-full p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+          class="w-full p-2 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500 bg-gray-700 text-gray-300 placeholder-gray-500"
         >
       </div>
 
       <!-- Coin list -->
-      <div class="bg-white rounded-lg shadow overflow-hidden">
+      <div class="bg-gray-800 rounded-lg shadow overflow-hidden">
         <!-- Table header (visible on md screens and up) -->
-        <div class="hidden md:grid grid-cols-5 gap-4 p-4 bg-purple-100 font-semibold text-purple-700">
+        <div class="hidden md:grid grid-cols-5 gap-4 p-4 bg-gray-700 font-semibold text-gray-300">
           <div>Name</div>
           <div>Symbol</div>
           <div class="text-right">Price</div>
@@ -25,34 +25,34 @@
         </div>
 
         <!-- Coin rows -->
-        <div v-for="coin in filteredCoins" :key="coin.coin_id" @click="handleRowClick(coin)" class="border-b border-gray-200 cursor-pointer hover:bg-gray-50">
+        <div v-for="coin in filteredCoins" :key="coin.coin_id" @click="handleRowClick(coin)" class="border-b border-gray-600 cursor-pointer hover:bg-gray-700">
           <!-- Mobile view -->
           <div class="md:hidden p-4">
             <div class="flex justify-between items-center">
               <div>
-                <h2 class="text-lg font-semibold text-gray-800">{{ coin.name }}</h2>
-                <p class="text-sm text-gray-600">{{ coin.symbol }}</p>
+                <h2 class="text-lg font-semibold text-gray-300">{{ coin.name }}</h2>
+                <p class="text-sm text-purple-400">{{ coin.symbol }}</p>
               </div>
               <div class="text-right">
-                <p class="text-lg font-semibold text-green-600">£{{ formatPrice(coin.current_price) }}</p>
+                <p class="text-lg font-semibold text-green-400">£{{ formatPrice(coin.current_price) }}</p>
               </div>
             </div>
           </div>
           
           <!-- Desktop view -->
           <div class="hidden md:grid grid-cols-5 gap-4 p-4 items-center">
-            <div class="font-semibold text-gray-800">{{ coin.name }}</div>
-            <div class="text-gray-600">{{ coin.symbol }}</div>
-            <div class="text-right font-semibold text-green-600">£{{ formatPrice(coin.current_price) }}</div>
-            <div class="text-right text-gray-600">£{{ formatLargeNumber(coin.market_cap) }}</div>
-            <div class="text-right text-gray-600">{{ formatLargeNumber(coin.supply) }}</div>
+            <div class="font-semibold text-gray-300">{{ coin.name }}</div>
+            <div class="text-purple-400">{{ coin.symbol }}</div>
+            <div class="text-right font-semibold text-green-400">£{{ formatPrice(coin.current_price) }}</div>
+            <div class="text-right text-gray-400">£{{ formatLargeNumber(coin.market_cap) }}</div>
+            <div class="text-right text-gray-400">{{ formatLargeNumber(coin.supply) }}</div>
           </div>
         </div>
       </div>
 
       <!-- Loading indicator -->
       <div v-if="loading" class="text-center py-4">
-        <p class="text-gray-600">Loading...</p>
+        <p class="text-gray-400">Loading...</p>
       </div>
     </div>
   </div>
